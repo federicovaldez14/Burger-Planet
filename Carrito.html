@@ -1,31 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Carrito</title>
     <link rel="stylesheet" href="Styles-Bplanet.css">
+
 </head>
-<body>
-<h1>  Bienvenido a su Carrito de Compras </h1>
-<p> Productos Seleccionados: </p>
-<main class="carrito-main">
 
-    <ul id="productosdecarrito"></ul>
+<body class="sobrenosotros">
+    <script src="CarritoyCat(inter).js" defer></script>
+    <header>
+        <img src="imagen.Burgerlogo.png" alt="Burger Planet Logo">
+        <h1><span>International Burger Planet System</span></h1>
+        <nav>
+            <ul>
+                <li><a href="EstructuraWeb.html">
+                        <div>☰ Menu</div>
+                    </a></li>
+                <li><a href="EstructuraWeb.html"><span>🏠 Home</span></a></li>
+                <li><a href="SobreNosotros.html">
+                        <div>ℹ️ Sobre Nosotros</div>
+                    </a></li>
+            </ul>
+        </nav>
+    </header>
 
-</main>
+    <main class="carrito-main">
+        <h1> Bienvenido a su Carrito de Compras </h1>
+        <p> Productos Seleccionados: </p>
+        <ul id="productosdecarrito"></ul>
+        <span><button onclick="CompletarCompra()">Finalizar Compra</button></span>
+        <span><button onclick="VaciarCarritodeCompra()">Cancelar su Compra</button></span>
+        <img src="Carrito de compras.png" alt="Carrito de Compras foto">
+    </main>
 
-<span><button onclick="CompletarCompra()">Finalizar Compra</button></span>
-<span><button onclick="VaciarCarritodeCompra()">Cancelar su Compra</button></span>
-
-<img src="Carrito de compras.png" alt="Carrito de Compras foto">
-<footer>
-    <nav>
-        <ul>
-            <li><a href="EstructuraWeb.html"><span>🏠 HOME</span></a></li>
-        </ul>
-    </nav>
-</footer>
-<script src="CarritoyCat(inter).js"></script>
 </body>
+
 </html>
