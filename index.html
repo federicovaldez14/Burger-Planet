@@ -1,14 +1,13 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="Styles-Bplanet.css">
     <title>Burger Planet</title>
     <script src="CarritoyCat(inter).js" defer></script>
+    <script src="asincronismo.js"></script>
 </head>
-
 <body>
 
     <header>
@@ -42,9 +41,11 @@
             </nav>
         </presentacion>
 
-        <Catalogo id="Catalogo">
+        <Catalogo >
             <h2>Catálogo de Productos</h2>
-            <ul>
+            <ul id="Catalogo"></ul>
+            <!--
+            <ul id="Catalogo">
                 <li>
 
                     <h3>Hamburguesa Clásica</h3>
@@ -106,6 +107,7 @@
                     <button class="agregarAlCarrito" data-nombre="Añadir Combo" data-precio="11.000">+🛒</button>
                 </li>
             </ul>
+        -->
         </Catalogo>
         <section id="carrito-section">
             <h2>🛒 Tu Carrito</h2>

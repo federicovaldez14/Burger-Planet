@@ -9,15 +9,6 @@ window.addEventListener("DOMContentLoaded", () => {
         preciototal = carrito.reduce((acc, prod) => acc + prod.precio, 0);
         if (listaCarrito) actualizarCarrito();
     }
-
-    // Solo agrega eventos si hay botones (en la página principal)
-    document.querySelectorAll(".agregarAlCarrito").forEach(boton => {
-        boton.addEventListener("click", () => {
-            const nombre = boton.getAttribute("data-nombre");
-            const precio = parseInt(boton.getAttribute("data-precio").replace('.', ''));
-            agregarAlCarrito(nombre, precio);
-        });
-    });
 });
 
 function agregarAlCarrito(nombre, precio) {
