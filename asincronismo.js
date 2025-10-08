@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-    fetch("https://script.google.com/macros/s/AKfycbys-xs5Qj9Sr2D1DWJ1SVAxkybyh8SfaMVKbRR1d9DdoRJMmi1Myjxmu2iyQaMb7Jp5mA/exec")
+    fetch("https://script.google.com/macros/s/AKfycbyq7w64n5Ni4fyNi76V5V4XvGlO9CXWuAoWi7JxfDWoTkMTgi5jL7noblNSaxQnF5zYMw/exec")
         .then(response => response.json())
         .then(json => {
             const productos = json.data;
