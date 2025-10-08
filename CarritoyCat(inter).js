@@ -128,7 +128,7 @@ async function CompletarCompra() {
   };
 
   try {
-    const response = await fetch("https://api.allorigins.win/raw?="+"https://script.google.com/macros/s/AKfycbyq7w64n5Ni4fyNi76V5V4XvGlO9CXWuAoWi7JxfDWoTkMTgi5jL7noblNSaxQnF5zYMw/exec", {
+    const response = await fetch("https://api.allorigins.win/raw?="+"https://script.google.com/macros/s/AKfycbxF_eZ079VEJndMU67DFCDSLuRAojse1iTJXKpTjGBw-dQ6GJR7-kQc12YINqMtw3VAvQ/exec", {
       method: "POST",
       body: JSON.stringify(pedido),
       headers: { "Content-Type": "application/json" }
