@@ -59,17 +59,65 @@ function VaciarCarritodeCompra() {
     mostrarMensaje("🗑️ Todos los productos eliminados");
 }
 
-function CompletarCompra() {
+async function CompletarCompra() {
     if (carrito.length === 0) {
         mostrarMensaje("⚠️ No hay productos en el carrito");
         return;
-    } else {
-        mostrarMensaje("✅ Compra completada con éxito" + `, total a pagar: $${preciototal.toLocaleString()}`);
     }
-    carrito = [];
-    preciototal = 0;
-    guardarCarrito();
-    actualizarCarrito();
+
+    // Solicitar datos del cliente
+    const nombre = prompt("Ingrese su nombre:");
+    const telefono = prompt("Ingrese su teléfono:");
+    const direccion = prompt("Ingrese su dirección:");
+
+    if (!nombre || !telefono || !direccion) {
+        mostrarMensaje("⚠️ Debe ingresar todos los datos del cliente.");
+        return;
+    }
+
+    // Agrupar productos por nombre para obtener cantidad
+    const productosAgrupados = {};
+    carrito.forEach(prod => {
+        if (!productosAgrupados[prod.nombre]) {
+            productosAgrupados[prod.nombre] = { ...prod, cantidad: 1 };
+        } else {
+            productosAgrupados[prod.nombre].cantidad += 1;
+        }
+    });
+
+    // Construir arreglo de productos con id, precio y cantidad
+    const productosPedido = Object.values(productosAgrupados).map(prod => ({
+        id: prod.nombre, // Usa el nombre como id si no tienes un id real
+        precio: prod.precio,
+        cantidad: prod.cantidad
+    }));
+
+    const pedido = {
+        nombreCliente: nombre,
+        telefonoCliente: telefono,
+        direccionCliente: direccion,
+        productos: productosPedido,
+        valorTotal: preciototal
+    };
+
+    try {
+        const response = await fetch("https://script.google.com/macros/s/AKfycbxKwLI0lNOqRabsZrpIwcnSzvHhuPpLS0BAl3i6nE9KtadhD-Ox6bjRbfII8fOVVGV3ig/exec", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(pedido)
+        });
+        if (response.ok) {  
+            mostrarMensaje("✅ Pedido enviado con éxito, total a pagar: $" + preciototal.toLocaleString());
+            carrito = [];
+            preciototal = 0;
+            guardarCarrito();
+            actualizarCarrito();
+        } else {
+            mostrarMensaje("❌ Error al enviar el pedido.");
+        }
+    } catch (error) {
+        mostrarMensaje("❌ Error de conexión al enviar el pedido.");
+    }
 }
 
 function mostrarMensaje(texto) {
