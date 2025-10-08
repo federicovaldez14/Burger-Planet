@@ -1,4 +1,4 @@
-const ENDPOINT_URL = "https://script.google.com/macros/s/AKfycbxF_eZ079VEJndMU67DFCDSLuRAojse1iTJXKpTjGBw-dQ6GJR7-kQc12YINqMtw3VAvQ/exec";
+const ENDPOINT_URL = "https://script.google.com/macros/s/AKfycbysTDJglp8qscqpJ2yshvuPbnsGcF5mrrIaPU6XvdLJxJnd2_P6XDCOyrRI5hU30Sjn/exec";
 let carrito = [];
 let preciototal = 0;
 
@@ -14,32 +14,21 @@ window.addEventListener("DOMContentLoaded", () => {
 
 function agregarAlCarrito(nombre, precio) {
     precio = parseFloat(precio);
-    carrito.push({ nombre, precio });
+    carrito.push({ nombre, precio, cantidad: 1 });
     preciototal += precio;
     guardarCarrito();
     actualizarCarrito();
     mostrarMensaje(`✅ ${nombre} añadido correctamente`);
-
-    let Carrito = JSON.parse(localStorage.getItem("Carrito")) || [];
-    const productoExistente = Carrito.find(p => p.nombre === nombre);
-
-    if (productoExistente) {
-    productoExistente.cantidad++;
-    } else {
-    Carrito.push({ nombre, precio, cantidad: 1 });
-    }
-
-    localStorage.setItem("Carrito", JSON.stringify(Carrito));
-    mostrarCarrito();
 }
 
 function actualizarCarrito() {
     const listaCarrito = document.getElementById("productosdecarrito");
     if (!listaCarrito) return;
     listaCarrito.innerHTML = "";
+
     carrito.forEach((producto, index) => {
         let li = document.createElement("li");
-        li.textContent = `${producto.nombre} - $${producto.precio.toLocaleString()}`;
+        li.textContent = `${producto.nombre} - $${producto.precio.toLocaleString()} (x${producto.cantidad || 1})`;
 
         let bEliminar = document.createElement("button");
         bEliminar.textContent = "❌";
@@ -49,7 +38,7 @@ function actualizarCarrito() {
         listaCarrito.appendChild(li);
     });
 
-    // Muestra el total
+    // total
     let totalLi = document.createElement("li");
     totalLi.style.fontWeight = "bold";
     totalLi.textContent = `Total: $${preciototal.toLocaleString()}`;
@@ -59,10 +48,10 @@ function actualizarCarrito() {
 function eliminarProducto(index) {
     const eliminado = carrito[index];
     preciototal -= eliminado.precio;
-    carrito = carrito.filter((_, i) => i !== index);
+    carrito.splice(index, 1);
     guardarCarrito();
     actualizarCarrito();
-    mostrarMensaje(`Producto 🗑️ ${eliminado.nombre} eliminado correctamente`);
+    mostrarMensaje(`🗑️ ${eliminado.nombre} eliminado correctamente`);
 }
 
 function VaciarCarritodeCompra() {
@@ -73,19 +62,6 @@ function VaciarCarritodeCompra() {
     mostrarMensaje("🗑️ Todos los productos eliminados");
 }
 
-function CompletarCompra() {
-    if (carrito.length === 0) {
-        mostrarMensaje("⚠️ No hay productos en el carrito");
-        return;
-    } else {
-        mostrarMensaje("✅ Compra completada con éxito" + `, total a pagar: $${preciototal.toLocaleString()}`);
-    }
-    carrito = [];
-    preciototal = 0;
-    guardarCarrito();
-    actualizarCarrito();
-}
-
 function mostrarMensaje(texto) {
     alert(texto);
 }
@@ -94,55 +70,63 @@ function guardarCarrito() {
     localStorage.setItem("carrito", JSON.stringify(carrito));
 }
 
-// ----- enviar pedido -----
+// ----- ✅ MÉTODO POST FUNCIONAL -----
 async function CompletarCompra() {
-  const nombre = document.getElementById("nombreCliente")?.value?.trim();
-  const telefono = document.getElementById("telefonoCliente")?.value?.trim();
-  const direccion = document.getElementById("direccionCliente")?.value?.trim();
+    const nombre = document.getElementById('nombreCliente')?.value?.trim();
+    const telefono = document.getElementById('telefonoCliente')?.value?.trim();
+    const direccion = document.getElementById('direccionCliente')?.value?.trim();
 
-  if (!nombre || !telefono || !direccion) {
-    alert("Por favor completa todos los campos.");
-    return;
-  }
-
-  if (carrito.length === 0) {
-    alert("El carrito está vacío.");
-    return;
-  }
-
-  const productos = carrito.map(it => ({
-    id: it.id || it.nombre,
-    precio: it.precio,
-    cantidad: it.cantidad
-  }));
-  const total = productos.reduce((s, it) => s + it.precio * it.cantidad, 0);
-
-  const pedido = { nombre, telefono, direccion, productos, total };
-
-  try {
-    const res = await fetch(URL_API, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(pedido)
-    });
-    const json = await res.json();
-    if (json.result === "success" || res.ok) {
-      alert("✅ Pedido enviado correctamente.");
-      VaciarCarritodeCompra();
-    } else {
-      console.error("Respuesta del servidor:", json);
-      alert("❌ Error al enviar el pedido.");
+    if (!nombre || !telefono || !direccion) {
+        alert("Por favor completa todos los campos.");
+        return;
     }
-  } catch (err) {
-    console.error("Error de red:", err);
-    alert("⚠️ No se pudo conectar con el servidor.");
-  }
+
+    if (carrito.length === 0) {
+        alert("Tu carrito está vacío.");
+        return;
+    }
+
+    const productosPedido = carrito.map(item => ({
+        id: item.id || item.nombre,
+        precio: item.precio,
+        cantidad: item.cantidad || 1
+    }));
+
+    const valorTotal = productosPedido.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
+
+    // número único de pedido
+    const numeroPedido = Math.random().toString(36).substring(2, 9).toUpperCase();
+
+    const pedidoPOST = {
+        numero_pedido: numeroPedido,
+        fecha: new Date().toISOString(),
+        nombre_cliente: nombre,
+        telefono_cliente: telefono,
+        direccion_cliente: direccion,
+        productos: JSON.stringify(productosPedido),
+        valor_total: valorTotal
+    };
+
+    try {
+        await fetch(ENDPOINT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            body: JSON.stringify(pedidoPOST)
+        });
+
+        mostrarMensaje(`✅ Pedido enviado correctamente.\nTotal: $${valorTotal.toLocaleString('es-CO')}`);
+
+        VaciarCarritodeCompra();
+
+        // Redirige a una página de confirmación (opcional)
+        // window.location.href = `confirmacion.html?pedido=${numeroPedido}&total=${valorTotal}`;
+    } catch (error) {
+        console.error('Error al enviar el pedido:', error);
+        alert("⚠️ Error al enviar el pedido. Intenta de nuevo.");
+    }
 }
 
 // ----- inicio -----
 document.addEventListener("DOMContentLoaded", () => {
-  cargarDesdeStorage();
-  mostrarCarrito();
+    actualizarCarrito();
 });
-document.addEventListener("DOMContentLoaded", mostrarCarrito);// lo llama al cargar la pagina para que se muestre el carrito 
-
