@@ -1,3 +1,4 @@
+const ENDPOINT_URL = "https://script.google.com/macros/s/AKfycbxF_eZ079VEJndMU67DFCDSLuRAojse1iTJXKpTjGBw-dQ6GJR7-kQc12YINqMtw3VAvQ/exec";
 let carrito = [];
 let preciototal = 0;
 
@@ -93,72 +94,55 @@ function guardarCarrito() {
     localStorage.setItem("carrito", JSON.stringify(carrito));
 }
 
+// ----- enviar pedido -----
 async function CompletarCompra() {
-
-    const nombre = document.getElementById("nombreCliente").value.trim();
-    const telefono = document.getElementById("telefonoCliente").value.trim();
-    const direccion = document.getElementById("direccionCliente").value.trim();
+  const nombre = document.getElementById("nombreCliente")?.value?.trim();
+  const telefono = document.getElementById("telefonoCliente")?.value?.trim();
+  const direccion = document.getElementById("direccionCliente")?.value?.trim();
 
   if (!nombre || !telefono || !direccion) {
-    alert("Por favor completa todos los campos del cliente antes de finalizar la compra.");
+    alert("Por favor completa todos los campos.");
     return;
   }
 
-  
-  const Carrito = JSON.parse(localStorage.getItem("Carrito")) || [];
-  if (Carrito.length === 0) {
+  if (carrito.length === 0) {
     alert("El carrito está vacío.");
     return;
   }
 
-  
-  const total = carrito.reduce((acc, item) => acc + (item.precio * item.cantidad), 0);
+  const productos = carrito.map(it => ({
+    id: it.id || it.nombre,
+    precio: it.precio,
+    cantidad: it.cantidad
+  }));
+  const total = productos.reduce((s, it) => s + it.precio * it.cantidad, 0);
 
-  
-  const pedido = {
-    nombre: nombre,
-    telefono: telefono,
-    direccion: direccion,
-    productos: carrito.map(item => ({
-      nombre: item.nombre,
-      precio: item.precio,
-      cantidad: item.cantidad
-    })),
-    total: total
-  };
+  const pedido = { nombre, telefono, direccion, productos, total };
 
   try {
-    const response = await fetch("https://api.allorigins.win/raw?="+"https://script.google.com/macros/s/AKfycbxF_eZ079VEJndMU67DFCDSLuRAojse1iTJXKpTjGBw-dQ6GJR7-kQc12YINqMtw3VAvQ/exec", {
+    const res = await fetch(URL_API, {
       method: "POST",
-      body: JSON.stringify(pedido),
-      headers: { "Content-Type": "application/json" }
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(pedido)
     });
-
-    const data = await response.json();
-    if (data.result === "success") {
-      alert(" Pedido enviado correctamente. ¡Gracias por tu compra! ");
-      localStorage.removeItem("Carrito"); 
-      document.getElementById("productosdecarrito").innerHTML = ""; 
+    const json = await res.json();
+    if (json.result === "success" || res.ok) {
+      alert("✅ Pedido enviado correctamente.");
+      VaciarCarritodeCompra();
     } else {
-      alert(" Error al enviar el pedido. Intenta de nuevo.");
+      console.error("Respuesta del servidor:", json);
+      alert("❌ Error al enviar el pedido.");
     }
-  } catch (error) {
-    console.error(" Error al enviar el pedido:", error);
-    alert(" Error al conectar con el servidor.");
+  } catch (err) {
+    console.error("Error de red:", err);
+    alert("⚠️ No se pudo conectar con el servidor.");
   }
 }
 
-function mostrarCarrito() {
-    const Carrito = JSON.parse(localStorage.getItem("Carrito")) || [];
-    const lista = document.getElementById("productosdecarrito");
-    lista.innerHTML = "";
-
-    Carrito.forEach(item => {
-    const li = document.createElement("li");
-    li.textContent = `${item.nombre} - $${item.precio} x ${item.cantidad}`;
-    lista.appendChild(li);
-  });
-}
-
+// ----- inicio -----
+document.addEventListener("DOMContentLoaded", () => {
+  cargarDesdeStorage();
+  mostrarCarrito();
+});
 document.addEventListener("DOMContentLoaded", mostrarCarrito);// lo llama al cargar la pagina para que se muestre el carrito 
 
