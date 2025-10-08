@@ -128,7 +128,7 @@ async function CompletarCompra() {
   };
 
   try {
-    const response = await fetch("https://script.google.com/macros/s/AKfycbxKwLI0lNOqRabsZrpIwcnSzvHhuPpLS0BAl3i6nE9KtadhD-Ox6bjRbfII8fOVVGV3ig/exec", {
+    const response = await fetch("https://script.google.com/macros/s/AKfycbwVP_MMdB2QYc-xG2vZMDpmgOrU9CO16jK3sV1Ngx_ruR4sZjgoEp6v1g_daDt4XJZDdA/exec", {
       method: "POST",
       body: JSON.stringify(pedido),
       headers: { "Content-Type": "application/json" }
