@@ -1,4 +1,4 @@
-const ENDPOINT_URL = "https://script.google.com/macros/s/AKfycbysTDJglp8qscqpJ2yshvuPbnsGcF5mrrIaPU6XvdLJxJnd2_P6XDCOyrRI5hU30Sjn/exec";
+const ENDPOINT_URL = "https://script.google.com/macros/s/AKfycby89fvtVY3e3-xg6bPrEajrxU5JTp-mX6GxjD4wq9ph12vkKxFnj0oR4PTCKT2nXq7FRQ/exec";
 let carrito = [];
 let preciototal = 0;
 
