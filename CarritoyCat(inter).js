@@ -12,6 +12,17 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 });
 
+// ----- ✅ FUNCIÓN PARA CONTADOR LOCAL -----
+function generarNumeroPedido() {
+    let contador = localStorage.getItem("contadorPedidos");
+    if (!contador) {
+        contador = 0;
+    }
+    contador = parseInt(contador) + 1;
+    localStorage.setItem("contadorPedidos", contador);
+    return contador;
+}
+
 function agregarAlCarrito(nombre, precio) {
     precio = parseFloat(precio);
     carrito.push({ nombre, precio, cantidad: 1 });
@@ -94,8 +105,8 @@ async function CompletarCompra() {
 
     const valorTotal = productosPedido.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
 
-    // número único de pedido
-    const numeroPedido = Math.random().toString(36).substring(2, 9).toUpperCase();
+    // ----- 🚀 NÚMERO DE PEDIDO SECUENCIAL -----
+    const numeroPedido = generarNumeroPedido();
 
     const pedidoPOST = {
         numero_pedido: numeroPedido,
@@ -114,12 +125,10 @@ async function CompletarCompra() {
             body: JSON.stringify(pedidoPOST)
         });
 
-        mostrarMensaje(`✅ Pedido enviado correctamente.\nTotal: $${valorTotal.toLocaleString('es-CO')}`);
+        mostrarMensaje(`✅ Pedido #${numeroPedido} enviado correctamente.\nTotal: $${valorTotal.toLocaleString('es-CO')}`);
 
         VaciarCarritodeCompra();
 
-        // Redirige a una página de confirmación (opcional)
-        // window.location.href = `confirmacion.html?pedido=${numeroPedido}&total=${valorTotal}`;
     } catch (error) {
         console.error('Error al enviar el pedido:', error);
         alert("⚠️ Error al enviar el pedido. Intenta de nuevo.");
