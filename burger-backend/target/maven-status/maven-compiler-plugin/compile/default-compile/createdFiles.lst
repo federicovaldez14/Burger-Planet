@@ -1,0 +1,16 @@
+com\burgerplanet\repository\ProductoRepository.class
+com\burgerplanet\service\PedidoService.class
+com\burgerplanet\model\ItemPedido.class
+com\burgerplanet\model\Usuario.class
+com\burgerplanet\security\SecurityConfig.class
+com\burgerplanet\repository\UsuarioRepository.class
+com\burgerplanet\BurgerPlanetApplication.class
+com\burgerplanet\model\Pedido.class
+com\burgerplanet\model\Producto.class
+com\burgerplanet\security\CustomUserDetailsService.class
+com\burgerplanet\config\CorsConfig.class
+com\burgerplanet\repository\PedidoRepository.class
+com\burgerplanet\controller\PedidoController.class
+com\burgerplanet\controller\ProductoController.class
+com\burgerplanet\config\CorsConfig$1.class
+com\burgerplanet\controller\AuthController.class
