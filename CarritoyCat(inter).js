@@ -1,141 +1,162 @@
-const ENDPOINT_URL = "https://script.google.com/macros/s/AKfycby89fvtVY3e3-xg6bPrEajrxU5JTp-mX6GxjD4wq9ph12vkKxFnj0oR4PTCKT2nXq7FRQ/exec";
+// URL del backend REAL
+const API_URL = "http://localhost:8080/api";
+
 let carrito = [];
 let preciototal = 0;
 
+// ===================================================
+//          CARGAR CARRITO DESDE LOCALSTORAGE
+// ===================================================
 window.addEventListener("DOMContentLoaded", () => {
-    const listaCarrito = document.getElementById("productosdecarrito");
     const guardado = localStorage.getItem("carrito");
+
     if (guardado) {
         carrito = JSON.parse(guardado);
-        preciototal = carrito.reduce((acc, prod) => acc + prod.precio, 0);
-        if (listaCarrito) actualizarCarrito();
+
+        carrito.forEach(item => {
+            preciototal += item.precio * item.cantidad;
+        });
+
+        actualizarCarrito();
     }
 });
 
-// ----- ✅ FUNCIÓN PARA CONTADOR LOCAL -----
-function generarNumeroPedido() {
-    let contador = localStorage.getItem("contadorPedidos");
-    if (!contador) {
-        contador = 0;
-    }
-    contador = parseInt(contador) + 1;
-    localStorage.setItem("contadorPedidos", contador);
-    return contador;
-}
-
-function agregarAlCarrito(nombre, precio) {
+// ===================================================
+//      AGREGAR PRODUCTO (usado por asincronismo.js)
+// ===================================================
+function agregarProductoAlCarrito(id, nombre, precio) {
     precio = parseFloat(precio);
-    carrito.push({ nombre, precio, cantidad: 1 });
-    preciototal += precio;
+
+    let existente = carrito.find(p => p.id == id);
+
+    if (existente) {
+        existente.cantidad++;
+    } else {
+        carrito.push({ id, nombre, precio, cantidad: 1 });
+    }
+
+    preciototal = carrito.reduce((acc, p) => acc + (p.precio * p.cantidad), 0);
+
     guardarCarrito();
     actualizarCarrito();
-    mostrarMensaje(`✅ ${nombre} añadido correctamente`);
+    alert(`✅ ${nombre} añadido al carrito`);
 }
 
+// ===================================================
+//                   ACTUALIZAR CARRITO
+// ===================================================
 function actualizarCarrito() {
-    const listaCarrito = document.getElementById("productosdecarrito");
-    if (!listaCarrito) return;
-    listaCarrito.innerHTML = "";
+    const lista = document.getElementById("productosdecarrito");
+    if (!lista) return;
+
+    lista.innerHTML = "";
 
     carrito.forEach((producto, index) => {
         let li = document.createElement("li");
-        li.textContent = `${producto.nombre} - $${producto.precio.toLocaleString()} (x${producto.cantidad || 1})`;
 
-        let bEliminar = document.createElement("button");
-        bEliminar.textContent = "❌";
-        bEliminar.addEventListener("click", () => eliminarProducto(index));
+        li.innerHTML = `
+            ${producto.nombre} - $${producto.precio.toLocaleString()} (x${producto.cantidad})
+            <button class="btnEliminar">❌</button>
+        `;
 
-        li.appendChild(bEliminar);
-        listaCarrito.appendChild(li);
+        li.querySelector(".btnEliminar")
+          .addEventListener("click", () => eliminarProducto(index));
+
+        lista.appendChild(li);
     });
 
-    // total
+    // Agregar total
     let totalLi = document.createElement("li");
     totalLi.style.fontWeight = "bold";
     totalLi.textContent = `Total: $${preciototal.toLocaleString()}`;
-    listaCarrito.appendChild(totalLi);
+    lista.appendChild(totalLi);
+
+    // También actualizar total del HTML si existe
+    const totalSpan = document.getElementById("totalCarrito");
+    if (totalSpan) totalSpan.innerText = "$" + preciototal.toLocaleString();
 }
 
-function eliminarProducto(index) {
-    const eliminado = carrito[index];
-    preciototal -= eliminado.precio;
-    carrito.splice(index, 1);
+// ===================================================
+//                    ELIMINAR PRODUCTO
+// ===================================================
+function eliminarProducto(i) {
+    const eliminado = carrito[i];
+    preciototal -= eliminado.precio * eliminado.cantidad;
+
+    carrito.splice(i, 1);
+
     guardarCarrito();
     actualizarCarrito();
-    mostrarMensaje(`🗑️ ${eliminado.nombre} eliminado correctamente`);
+
+    alert(`🗑️ ${eliminado.nombre} eliminado`);
 }
 
+// ===================================================
+//                      VACIAR TODO
+// ===================================================
 function VaciarCarritodeCompra() {
     carrito = [];
     preciototal = 0;
+
     guardarCarrito();
     actualizarCarrito();
-    mostrarMensaje("🗑️ Todos los productos eliminados");
+
+    alert("🗑️ Carrito vaciado");
 }
 
-function mostrarMensaje(texto) {
-    alert(texto);
-}
-
+// ===================================================
+//              GUARDAR EN LOCALSTORAGE
+// ===================================================
 function guardarCarrito() {
     localStorage.setItem("carrito", JSON.stringify(carrito));
 }
 
-// ----- ✅ MÉTODO POST FUNCIONAL -----
+// ===================================================
+//             ENVIAR PEDIDO AL BACKEND REAL
+// ===================================================
 async function CompletarCompra() {
-    const nombre = document.getElementById('nombreCliente')?.value?.trim();
-    const telefono = document.getElementById('telefonoCliente')?.value?.trim();
-    const direccion = document.getElementById('direccionCliente')?.value?.trim();
+    const nombre = document.getElementById("nombreCliente")?.value?.trim();
+    const telefono = document.getElementById("telefonoCliente")?.value?.trim();
+    const direccion = document.getElementById("direccionCliente")?.value?.trim();
 
     if (!nombre || !telefono || !direccion) {
-        alert("Por favor completa todos los campos.");
+        alert("⚠️ Completa todos los datos del cliente.");
         return;
     }
 
     if (carrito.length === 0) {
-        alert("Tu carrito está vacío.");
+        alert("⚠️ El carrito está vacío.");
         return;
     }
 
-    const productosPedido = carrito.map(item => ({
-        id: item.id || item.nombre,
-        precio: item.precio,
-        cantidad: item.cantidad || 1
-    }));
-
-    const valorTotal = productosPedido.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
-
-    // ----- 🚀 NÚMERO DE PEDIDO SECUENCIAL -----
-    const numeroPedido = generarNumeroPedido();
-
-    const pedidoPOST = {
-        numero_pedido: numeroPedido,
-        fecha: new Date().toISOString(),
-        nombre_cliente: nombre,
-        telefono_cliente: telefono,
-        direccion_cliente: direccion,
-        productos: JSON.stringify(productosPedido),
-        valor_total: valorTotal
+    const pedido = {
+        cliente: nombre,       // <<< CORREGIDO
+        telefono: telefono,    // <<< OK
+        direccion: direccion,  // <<< OK
+        items: carrito.map(item => ({
+            productoId: item.id,
+            cantidad: item.cantidad
+        }))
     };
 
     try {
-        await fetch(ENDPOINT_URL, {
-            method: 'POST',
-            mode: 'no-cors',
-            body: JSON.stringify(pedidoPOST)
+        const res = await fetch(`${API_URL}/pedidos`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(pedido)
         });
 
-        mostrarMensaje(`✅ Pedido #${numeroPedido} enviado correctamente.\nTotal: $${valorTotal.toLocaleString('es-CO')}`);
+        if (!res.ok) {
+            alert("⚠️ Error enviando pedido.");
+            return;
+        }
+
+        alert(`✅ Pedido enviado correctamente. Total: $${preciototal.toLocaleString()}`);
 
         VaciarCarritodeCompra();
 
     } catch (error) {
-        console.error('Error al enviar el pedido:', error);
-        alert("⚠️ Error al enviar el pedido. Intenta de nuevo.");
+        console.error("Error:", error);
+        alert("❌ Error de conexión con el servidor.");
     }
 }
-
-// ----- inicio -----
-document.addEventListener("DOMContentLoaded", () => {
-    actualizarCarrito();
-});

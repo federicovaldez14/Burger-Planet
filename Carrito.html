@@ -7,46 +7,56 @@
     <title>Carrito</title>
     <link rel="stylesheet" href="Styles-Bplanet.css">
 
+    <!-- Conecta tu script del carrito que ya corregimos -->
+    <script src="CarritoyCat(inter).js" defer></script>
 </head>
 
 <body class="sobrenosotros">
-    <script src="CarritoyCat(inter).js" defer></script>
+
     <header>
         <img src="imagen.Burgerlogo.png" alt="Burger Planet Logo">
         <h1><span>International Burger Planet System</span></h1>
+
         <nav>
             <ul>
-                <li><a href="index.html">
-                        <div>☰ Menu</div>
-                    </a></li>
+                <li><a href="index.html"><div>☰ Menu</div></a></li>
                 <li><a href="index.html"><span>🏠 Home</span></a></li>
-                <li><a href="SobreNosotros.html">
-                        <div>ℹ️ Sobre Nosotros</div>
-                </a></li>
+                <li><a href="SobreNosotros.html"><div>ℹ️ Sobre Nosotros</div></a></li>
             </ul>
         </nav>
     </header>
 
     <main class="carrito-main">
-        <h1> Bienvenido a su Carrito de Compras </h1>
-        <p> Productos Seleccionados: </p>
+
+        <h1>Bienvenido a su Carrito de Compras</h1>
+        <p>Productos Seleccionados:</p>
+
+        <!-- LISTA DINÁMICA DEL CARRITO -->
         <ul id="productosdecarrito"></ul>
 
-    <div id="datosCliente">
+        <!-- TOTAL DEL CARRITO (AGREGADO PARA REQUISITO DEL PROYECTO) -->
+        <p><strong>Total:</strong> <span id="totalCarrito">$0</span></p>
 
-        <h3>Datos del cliente</h3>
-        <input type="text" id="nombreCliente" placeholder="Nombre completo" required>
-        <input type="text" id="telefonoCliente" placeholder="Teléfono" required>
-        <input type="text" id="direccionCliente" placeholder="Dirección de entrega" required>
-        
-    </div>
+        <!-- DATOS DEL CLIENTE -->
+        <div id="datosCliente">
+            <h3>Datos del cliente</h3>
+            <input type="text" id="nombreCliente" placeholder="Nombre completo" required>
+            <input type="text" id="telefonoCliente" placeholder="Teléfono" required>
+            <input type="text" id="direccionCliente" placeholder="Dirección de entrega" required>
+        </div>
 
-        <span><button onclick="CompletarCompra()">Finalizar Compra</button></span>
-        <span><button onclick="VaciarCarritodeCompra()">Cancelar su Compra</button></span>
+        <!-- BOTONES DE ACCIÓN -->
+        <span>
+            <button onclick="CompletarCompra()">Finalizar Compra</button>
+        </span>
+
+        <span>
+            <button onclick="VaciarCarritodeCompra()">Cancelar su Compra</button>
+        </span>
+
         <img src="Carrito de compras.png" alt="Carrito de Compras foto">
-    </main>
 
-    
+    </main>
 
 </body>
 

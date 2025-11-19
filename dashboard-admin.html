@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Administrador</title>
+    <link rel="stylesheet" href="Styles-Bplanet.css">
+    <script src="admin.js" defer></script>
+</head>
+
+<body>
+
+    <header>
+        <h1>Gestión de Pedidos – Admin</h1>
+        <button onclick="logoutAdmin()">Cerrar sesión</button>
+    </header>
+
+    <main>
+
+        <section>
+            <h2>Filtrar por estado</h2>
+
+            <button onclick="cargarPedidos('todos')">Todos</button>
+            <button onclick="cargarPedidos('pendiente')">Pendientes</button>
+            <button onclick="cargarPedidos('atendido')">Atendidos</button>
+        </section>
+
+        <section>
+            <h2>Búsqueda por cliente</h2>
+            <input type="text" id="buscarCliente" placeholder="Nombre del cliente">
+            <button onclick="buscarPorCliente()">Buscar</button>
+        </section>
+
+        <section>
+            <h2>Lista de pedidos</h2>
+            <table border="1" id="tablaPedidos">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Cliente</th>
+                        <th>Teléfono</th>
+                        <th>Dirección</th>
+                        <th>Estado</th>
+                        <th>Items</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </section>
+
+    </main>
+
+</body>
+</html>

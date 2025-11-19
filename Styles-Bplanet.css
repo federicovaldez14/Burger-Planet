@@ -105,103 +105,161 @@ presentacion nav ul li a {
     }
 }
 
-/* Catálogo */
-Catalogo {
+/* ===== Reemplazo: sección de catálogo (elimino selectores "Catalogo" antiguos y uso IDs/CLASES actuales) ===== */
+
+#catalogo-section {
     display: block;
     margin: 40px auto;
     max-width: 1100px;
     background: #fff;
     border-radius: 14px;
-    box-shadow: 0 2px 16px rgba(34, 34, 34, 0.07);
-    padding: 35px 5%;
+    box-shadow: 0 2px 16px rgba(34,34,34,0.07);
+    padding: 28px 5%;
 }
 
-Catalogo h2 {
+#catalogo-section h2 {
     text-align: center;
     color: #ff8800;
-    margin-bottom: 30px;
-    font-size: 2rem;
+    margin-bottom: 24px;
+    font-size: 1.9rem;
 }
 
-Catalogo ul {
+/* lista de catálogo generada dinámicamente */
+#catalogo-lista {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 30px;
+    gap: 26px;
     list-style: none;
     padding: 0;
+    margin: 0;
+    align-items: start; /* asegura que los items comiencen desde arriba */
 }
 
-Catalogo ul li {
-    background: #fffbe7;
-    border-radius: 10px;
-    box-shadow: 0 1px 6px rgba(255, 179, 71, 0.10);
-    padding: 18px 12px 20px 12px;
-    text-align: center;
-    transition:
-        transform 0.18s cubic-bezier(.4, 2, .6, 1),
-        box-shadow 0.18s cubic-bezier(.4, 2, .6, 1);
+/* cada item: forzar que todos los cards tengan la misma estructura y estiren */
+#catalogo-lista .catalogo-item {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    cursor: pointer;
+    align-items: stretch; /* importante para que imagen y contenido ocupen ancho completo */
+    text-align: center;
+    min-height: 360px;
+    position: relative;
+    overflow: hidden;
+    padding: 18px 14px;
+    background: #fffbe7;
+    border-radius: 12px;
+    box-shadow: 0 1px 8px rgba(255,179,71,0.10);
+    transition: transform 0.22s cubic-bezier(.2,.9,.25,1), box-shadow 0.22s;
 }
 
-Catalogo ul li:hover {
-    transform: scale(1.06) translateY(-6px);
-    box-shadow: 0 8px 24px rgba(255, 179, 71, 0.22), 0 1.5px 8px rgba(34, 34, 34, 0.10);
+/* contenedor fijo para la imagen: fija la altura y recorta contenido sobrante */
+#catalogo-lista .catalogo-item .img-wrap {
+    width: 100%;
+    height: 180px; /* altura uniforme para todas las imágenes */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: 10px;
+    background: #fff;
+    border: 1px solid rgba(255,179,71,0.12);
+    margin-bottom: 12px;
+}
+
+/* imagen ocupa todo el contenedor y se recorta manteniendo proporción */
+#catalogo-lista .catalogo-item .img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* recorta sin deformar */
+    display: block;
+    transition: transform 0.22s;
+}
+
+/* hover mantiene la animación pero sin causar solapamientos */
+#catalogo-lista .catalogo-item:hover {
+    transform: translateY(-8px) scale(1.03);
+    box-shadow: 0 12px 30px rgba(255,179,71,0.20), 0 2px 10px rgba(34,34,34,0.08);
     z-index: 2;
 }
 
-
-Catalogo ul li:hover img {
-    transform: scale(1.08) rotate(-2deg);
-    transition: transform 0.18s cubic-bezier(.4, 2, .6, 1);
+#catalogo-lista .catalogo-item:hover .img-wrap img {
+    transform: scale(1.06) rotate(-1.5deg);
 }
 
-Catalogo ul li img {
-    width: 120px;
-    height: 120px;
-    object-fit: contain;
-    margin: 15px 0 10px 0;
-    border-radius: 8px;
-}
-
-Catalogo ul li h3 {
+/* textos */
+#catalogo-lista .catalogo-item h3 {
     color: #ff8800;
-    margin-bottom: 8px;
-    font-size: 1.2rem;
+    margin: 8px 0;
+    font-size: 1.15rem;
 }
 
-Catalogo ul li p {
-    font-size: 1rem;
-    margin-bottom: 10px;
-}
-
-Catalogo ul li span {
-    display: block;
-    font-weight: bold;
+#catalogo-lista .catalogo-item p {
     color: #222;
-    margin-bottom: 10px;
+    font-size: 0.98rem;
+    margin: 6px 0 10px;
+    padding: 0 6px;
 }
 
-Catalogo ul li button {
-    background: #ffb347;
+/* precio */
+#catalogo-lista .catalogo-item .precio {
+    font-weight: 700;
+    color: #222;
+    margin-bottom: 12px;
+}
+
+/* botón: alineado al fondo del card para mantener posición consistente */
+#catalogo-lista .catalogo-item .agregarAlCarrito {
+    margin-top: auto; /* empuja el botón abajo */
+    background: linear-gradient(90deg,#ffb347 60%,#ff8800 100%);
     color: #222;
     border: none;
-    padding: 8px 18px;
-    border-radius: 20px;
+    padding: 10px 20px;
+    border-radius: 22px;
     font-size: 1rem;
-    font-weight: bold;
+    font-weight: 700;
     cursor: pointer;
-    transition: background 0.2s, color 0.2s;
-    margin-top: 10px;
+    transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s;
+    box-shadow: 0 4px 14px rgba(255,179,71,0.12);
     align-self: center;
 }
 
-Catalogo ul li button:hover {
-    background: #ff8800;
+/* micro-interacciones */
+#catalogo-lista .catalogo-item .agregarAlCarrito:hover {
+    transform: translateY(-6px) scale(1.04);
     color: #fff;
+    background: linear-gradient(90deg,#ff8800 60%,#ffb347 100%);
+    box-shadow: 0 10px 30px rgba(255,136,0,0.16);
 }
+
+#catalogo-lista .catalogo-item .agregarAlCarrito:active {
+    transform: scale(0.98);
+}
+
+#catalogo-lista .catalogo-item .agregarAlCarrito:focus {
+    outline: 3px solid rgba(255,184,71,0.25);
+    outline-offset: 2px;
+}
+
+/* si quieres indicar un pequeño "bounce" al cargar */
+@keyframes subtlePop {
+    from { transform: translateY(6px) scale(.995); opacity: 0; }
+    to { transform: translateY(0) scale(1); opacity: 1; }
+}
+#catalogo-lista .catalogo-item { animation: subtlePop 360ms ease both; }
+
+/* responsive tweaks */
+@media (max-width:700px) {
+    #catalogo-lista .catalogo-item {
+        min-height: 320px;
+        padding: 16px;
+    }
+    #catalogo-lista .catalogo-item .img-wrap {
+        height: 140px;
+    }
+    #catalogo-lista .catalogo-item .img-wrap img {
+        object-position: center top;
+    }
+}
+/* ===== fin reemplazo catálogo ===== */
 
 /* Carrito de Compras */
 body.carrito {
@@ -476,4 +534,171 @@ footer nav ul li a:hover {
     gap: 18px;
     width: 100%;
     margin-bottom: 18px;
+}
+/* ================================
+   ESTILOS PARA LOGIN ADMIN
+================================ */
+
+.login-admin {
+    max-width: 380px;
+    margin: 50px auto;
+    padding: 30px;
+    background: #ffffffd8;
+    backdrop-filter: blur(6px);
+    border-radius: 15px;
+    box-shadow: 0 0 12px rgba(0,0,0,0.2);
+    text-align: center;
+}
+
+.login-admin h2 {
+    margin-bottom: 25px;
+    font-size: 1.8rem;
+}
+
+.login-admin input {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    border-radius: 8px;
+    border: 1px solid #aaa;
+    font-size: 1rem;
+}
+
+.login-admin button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 15px;
+    background-color: #ff6b00;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: 0.2s ease-in-out;
+}
+
+.login-admin button:hover {
+    background-color: #d45b00;
+}
+
+/* ================================
+   HEADER ADMIN
+================================ */
+
+body {
+    font-family: Arial, sans-serif;
+}
+
+header {
+    background: #ff6b00;
+    color: white;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header h1 {
+    font-size: 1.8rem;
+    margin: 0;
+}
+
+header button {
+    padding: 10px 15px;
+    background: #222;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+header button:hover {
+    background: #444;
+}
+
+/* ================================
+   SECCIONES Y CONTENIDO
+================================ */
+
+main {
+    padding: 25px;
+}
+
+section {
+    margin-bottom: 35px;
+}
+
+section h2 {
+    font-size: 1.6rem;
+    margin-bottom: 12px;
+}
+
+input#buscarCliente {
+    padding: 10px;
+    width: 250px;
+    border-radius: 8px;
+    border: 1px solid #aaa;
+}
+
+button {
+    padding: 10px 18px;
+    background-color: #ff6b00;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    margin-left: 5px;
+    transition: 0.25s ease-in-out;
+}
+
+button:hover {
+    background-color: #d45b00;
+}
+
+/* ================================
+   TABLA DE PEDIDOS
+================================ */
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+thead {
+    background-color: #ff6b00;
+    color: white;
+}
+
+thead th {
+    padding: 12px;
+    font-size: 1rem;
+}
+
+tbody tr {
+    background-color: #fff;
+    border-bottom: 1px solid #ddd;
+}
+
+tbody tr:hover {
+    background-color: #f5f5f5;
+}
+
+td {
+    padding: 12px;
+    font-size: 0.95rem;
+}
+
+/* Botón de acción dentro de la tabla */
+table button {
+    background: #00994c;
+    padding: 8px 12px;
+    font-size: 0.9rem;
+}
+
+table button:hover {
+    background: #007a3e;
 }
