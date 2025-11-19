@@ -68,3 +68,27 @@ function activarBotonesCarrito() {
 }
 
 document.addEventListener("DOMContentLoaded", cargarProductos);
+function showToast(message, type = "success") {
+    const container = document.getElementById("toast-container");
+
+    const toast = document.createElement("div");
+    toast.classList.add("toast", type);
+
+    // Íconos
+    let icon = "✔";
+    if (type === "error") icon = "✖";
+    if (type === "info") icon = "ℹ";
+
+    toast.innerHTML = `
+        <span class="icon">${icon}</span>
+        <span>${message}</span>
+    `;
+
+    container.appendChild(toast);
+
+    // Eliminar después de la animación
+    setTimeout(() => {
+        toast.remove();
+    }, 3500);
+}
+

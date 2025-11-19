@@ -1,12 +1,11 @@
-// URL del backend REAL
 const API_URL = "http://localhost:8080/api";
 
 let carrito = [];
 let preciototal = 0;
 
-// ===================================================
-//          CARGAR CARRITO DESDE LOCALSTORAGE
-// ===================================================
+// ==============================================
+//         CARGAR CARRITO DESDE LOCALSTORAGE
+// ==============================================
 window.addEventListener("DOMContentLoaded", () => {
     const guardado = localStorage.getItem("carrito");
 
@@ -21,9 +20,9 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-// ===================================================
-//      AGREGAR PRODUCTO (usado por asincronismo.js)
-// ===================================================
+// ========================================================
+//           AGREGAR PRODUCTO AL CARRITO
+// ========================================================
 function agregarProductoAlCarrito(id, nombre, precio) {
     precio = parseFloat(precio);
 
@@ -39,12 +38,13 @@ function agregarProductoAlCarrito(id, nombre, precio) {
 
     guardarCarrito();
     actualizarCarrito();
-    alert(`✅ ${nombre} añadido al carrito`);
+
+    showToast(`🍔 ${nombre} añadido al carrito`, "success");
 }
 
-// ===================================================
-//                   ACTUALIZAR CARRITO
-// ===================================================
+// ========================================================
+//                    ACTUALIZAR CARRITO
+// ========================================================
 function actualizarCarrito() {
     const lista = document.getElementById("productosdecarrito");
     if (!lista) return;
@@ -65,20 +65,18 @@ function actualizarCarrito() {
         lista.appendChild(li);
     });
 
-    // Agregar total
     let totalLi = document.createElement("li");
     totalLi.style.fontWeight = "bold";
     totalLi.textContent = `Total: $${preciototal.toLocaleString()}`;
     lista.appendChild(totalLi);
 
-    // También actualizar total del HTML si existe
     const totalSpan = document.getElementById("totalCarrito");
     if (totalSpan) totalSpan.innerText = "$" + preciototal.toLocaleString();
 }
 
-// ===================================================
-//                    ELIMINAR PRODUCTO
-// ===================================================
+// ========================================================
+//                ELIMINAR PRODUCTO
+// ========================================================
 function eliminarProducto(i) {
     const eliminado = carrito[i];
     preciototal -= eliminado.precio * eliminado.cantidad;
@@ -88,12 +86,12 @@ function eliminarProducto(i) {
     guardarCarrito();
     actualizarCarrito();
 
-    alert(`🗑️ ${eliminado.nombre} eliminado`);
+    showToast(`🗑️ ${eliminado.nombre} eliminado`, "info");
 }
 
-// ===================================================
-//                      VACIAR TODO
-// ===================================================
+// ========================================================
+//                VACIAR TODO EL CARRITO
+// ========================================================
 function VaciarCarritodeCompra() {
     carrito = [];
     preciototal = 0;
@@ -101,38 +99,38 @@ function VaciarCarritodeCompra() {
     guardarCarrito();
     actualizarCarrito();
 
-    alert("🗑️ Carrito vaciado");
+    showToast("🗑️ Carrito vaciado", "info");
 }
 
-// ===================================================
-//              GUARDAR EN LOCALSTORAGE
-// ===================================================
+// ========================================================
+//                GUARDAR CARRITO
+// ========================================================
 function guardarCarrito() {
     localStorage.setItem("carrito", JSON.stringify(carrito));
 }
 
-// ===================================================
-//             ENVIAR PEDIDO AL BACKEND REAL
-// ===================================================
+// ========================================================
+//            ENVIAR PEDIDO AL BACKEND
+// ========================================================
 async function CompletarCompra() {
     const nombre = document.getElementById("nombreCliente")?.value?.trim();
     const telefono = document.getElementById("telefonoCliente")?.value?.trim();
     const direccion = document.getElementById("direccionCliente")?.value?.trim();
 
     if (!nombre || !telefono || !direccion) {
-        alert("⚠️ Completa todos los datos del cliente.");
+        showToast("⚠️ Completa todos los datos del cliente", "error");
         return;
     }
 
     if (carrito.length === 0) {
-        alert("⚠️ El carrito está vacío.");
+        showToast("⚠️ El carrito está vacío", "error");
         return;
     }
 
     const pedido = {
-        cliente: nombre,       // <<< CORREGIDO
-        telefono: telefono,    // <<< OK
-        direccion: direccion,  // <<< OK
+        cliente: nombre,
+        telefono: telefono,
+        direccion: direccion,
         items: carrito.map(item => ({
             productoId: item.id,
             cantidad: item.cantidad
@@ -147,16 +145,41 @@ async function CompletarCompra() {
         });
 
         if (!res.ok) {
-            alert("⚠️ Error enviando pedido.");
+            showToast("❌ Error enviando pedido", "error");
             return;
         }
 
-        alert(`✅ Pedido enviado correctamente. Total: $${preciototal.toLocaleString()}`);
+        showToast(`🛸 Pedido enviado correctamente. Total: $${preciototal.toLocaleString()}`, "success");
 
         VaciarCarritodeCompra();
 
     } catch (error) {
         console.error("Error:", error);
-        alert("❌ Error de conexión con el servidor.");
+        showToast("❌ Error de conexión al servidor", "error");
     }
+}
+
+// ========================================================
+//                 FUNCIÓN PARA TOASTS
+// ========================================================
+function showToast(message, type = "success") {
+    const container = document.getElementById("toast-container");
+
+    const toast = document.createElement("div");
+    toast.classList.add("toast", type);
+
+    let icon = "✔";
+    if (type === "error") icon = "✖";
+    if (type === "info") icon = "ℹ";
+
+    toast.innerHTML = `
+        <span class="icon">${icon}</span>
+        <span>${message}</span>
+    `;
+
+    container.appendChild(toast);
+
+    setTimeout(() => {
+        toast.remove();
+    }, 3500);
 }

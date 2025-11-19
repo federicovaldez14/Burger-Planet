@@ -37,27 +37,42 @@
         <!-- TOTAL DEL CARRITO (AGREGADO PARA REQUISITO DEL PROYECTO) -->
         <p><strong>Total:</strong> <span id="totalCarrito">$0</span></p>
 
-        <!-- DATOS DEL CLIENTE -->
-        <div id="datosCliente">
-            <h3>Datos del cliente</h3>
-            <input type="text" id="nombreCliente" placeholder="Nombre completo" required>
-            <input type="text" id="telefonoCliente" placeholder="Teléfono" required>
-            <input type="text" id="direccionCliente" placeholder="Dirección de entrega" required>
+        <!-- DATOS DEL CLIENTE: REEMPLAZADO POR DISEÑO MEJORADO -->
+        <div id="datosCliente" class="cliente-card">
+            <h3>Datos de entrega</h3>
+
+            <form id="formCliente" onsubmit="event.preventDefault(); CompletarCompra();">
+                <div class="form-row">
+                    <label class="field">
+                        <span class="label-text">Nombre completo</span>
+                        <input type="text" id="nombreCliente" placeholder="Ej. Juan Pérez" required>
+                    </label>
+
+                    <label class="field">
+                        <span class="label-text">Teléfono</span>
+                        <input type="tel" id="telefonoCliente" placeholder="Ej. 3001234567" pattern="[0-9]{7,15}" required>
+                    </label>
+                </div>
+
+                <label class="field full">
+                    <span class="label-text">Dirección de entrega</span>
+                    <input type="text" id="direccionCliente" placeholder="Calle, número, barrio" required>
+                </label>
+
+                <div class="form-actions">
+                    <button class="btn-primary" type="submit">Finalizar compra</button>
+                    <button class="btn-ghost" type="button" onclick="VaciarCarritodeCompra()">Cancelar compra</button>
+                </div>
+            </form>
+
+            <small class="nota">Al finalizar, te contactaremos al número indicado para confirmar el pedido.</small>
         </div>
 
-        <!-- BOTONES DE ACCIÓN -->
-        <span>
-            <button onclick="CompletarCompra()">Finalizar Compra</button>
-        </span>
-
-        <span>
-            <button onclick="VaciarCarritodeCompra()">Cancelar su Compra</button>
-        </span>
-
+        <!-- Imagen decorativa -->
         <img src="Carrito de compras.png" alt="Carrito de Compras foto">
 
     </main>
 
 </body>
-
+<div id="toast-container"></div>
 </html>
