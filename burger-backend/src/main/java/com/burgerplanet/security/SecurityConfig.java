@@ -65,19 +65,26 @@ public SecurityFilterChain filterChain(HttpSecurity http, MvcRequestMatcher.Buil
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
+@Bean
 public CorsFilter corsFilter() {
     CorsConfiguration config = new CorsConfiguration();
     config.setAllowCredentials(true);
+
+    // LOCALHOST
     config.addAllowedOriginPattern("http://127.0.0.1:5500");
     config.addAllowedOriginPattern("http://localhost:5500");
+
+    // GITHUB PAGES (TU FRONTEND FINAL)
+    config.addAllowedOriginPattern("https://federicovaldez14.github.io");
+
     config.addAllowedHeader("*");
     config.addAllowedMethod("*");
-    config.setAllowCredentials(true);
 
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     source.registerCorsConfiguration("/**", config);
+
     return new CorsFilter(source);
 }
+
 
 }
