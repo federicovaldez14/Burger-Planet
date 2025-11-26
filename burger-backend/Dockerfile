@@ -1,29 +1,21 @@
-# ============================
-# 1) Etapa de construcción
-# ============================
+# ============ BUILDER STAGE ============
 FROM maven:3.9.6-eclipse-temurin-17 AS build
-
 WORKDIR /app
-
 COPY pom.xml .
 COPY src ./src
-
 RUN mvn clean package -DskipTests
 
-# ============================
-# 2) Etapa final
-# ============================
+# ============ RUNTIME STAGE ============
 FROM eclipse-temurin:17-jdk
-
 WORKDIR /app
 
-# Copiamos el jar final
+# Copiar el JAR generado
 COPY --from=build /app/target/*.jar app.jar
 
-# Render nos da una variable PORT
+# Render usa variable PORT
 ENV PORT=8080
 
 EXPOSE 8080
 
-# Ejecutamos el backend
-CMD ["sh", "-c", "java -jar app.jar --server.port=$PORT"]
+# Ejecutar el jar correcto
+CMD ["java", "-jar", "app.jar", "--server.port=${PORT}"]

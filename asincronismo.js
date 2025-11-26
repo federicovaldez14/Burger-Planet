@@ -1,5 +1,5 @@
 // URL de tu backend
-const BACKEND_URL = "http://localhost:8080/api";
+const BACKEND_URL = "https://burger-planet-backend.onrender.com/api";
 const catalogoUL = document.getElementById("catalogo-lista");
 
 let productosGlobal = []; // almacena la lista completa
