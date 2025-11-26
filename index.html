@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <link rel="icon" href="imagen.Burgerlogo.png" type="image/png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="Styles-Bplanet.css">
@@ -51,6 +52,15 @@
         ============================= -->
        <section id="catalogo-section">
             <h2>Catálogo de Productos</h2>
+
+            <!-- FILTROS -->
+            <div class="catalogo-filtros" role="toolbar" aria-label="Filtros de productos">
+                <button class="filter-btn active" data-category="todos">Todos</button>
+                <button class="filter-btn" data-category="hamburguesas">Hamburguesas</button>
+                <button class="filter-btn" data-category="combos">Combos</button>
+                <button class="filter-btn" data-category="acompañamientos">Acompañamientos</button>
+            </div>
+
             <ul id="catalogo-lista" class="catalogo-lista"></ul>
         </section>
 

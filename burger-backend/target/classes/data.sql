@@ -1,7 +1,7 @@
 INSERT INTO producto (nombre, categoria, descripcion, precio, imagen_url) VALUES
 ('Hamburguesa Clasica', 'Hamburguesas', 'Hamburguesa con carne, lechuga, tomate y cebolla.', 15000, 'HCLASICA.png'),
 ('Hamburguesa Super Planetaria', 'Hamburguesas', 'Doble carne, queso cheddar, tocineta y toppings planetarios.', 35000, 'Planetaria.png'),
-('Adicion de Papas Fritas', 'Acompañamientos', 'Papas crujientes acompanamiento universal.', 12000, 'papasfritas.png'),
+('Adicion de Papas Fritas', 'Acompanamientos', 'Papas crujientes acompanamiento universal.', 12000, 'papasfritas.png'),
 ('Hamburguesa Hiper Planetaria', 'Hamburguesas', 'Triple carne, cheddar, tocineta y todas las salsas.', 55000, 'HPlanetaria.png'),
 ('Hamburguesa Saturno', 'Hamburguesas', 'Hamburguesa con aros de cebolla estilo planetario.', 45000, 'HSATURNO.png'),
 ('Hamburguesa Concord', 'Hamburguesas', 'Triple carne de cerdo, res y pollo.', 25000, 'Concord.png'),

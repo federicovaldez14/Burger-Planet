@@ -261,6 +261,40 @@ presentacion nav ul li a {
 }
 /* ===== fin reemplazo catálogo ===== */
 
+/* Filtros de catálogo */
+.catalogo-filtros {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    margin: 18px 0;
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    background: linear-gradient(90deg,#fff 10%, #fffaf0 100%);
+    color: #222;
+    border: 1px solid rgba(255,179,71,0.15);
+    padding: 8px 14px;
+    border-radius: 20px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.14s ease, box-shadow 0.14s, background 0.14s;
+    min-width: 120px;
+    text-align: center;
+}
+
+.filter-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 22px rgba(255,179,71,0.12);
+}
+
+.filter-btn.active {
+    background: linear-gradient(90deg,#ffb347 60%,#ff8800 100%);
+    color: #fff;
+    box-shadow: 0 10px 30px rgba(255,136,0,0.16);
+}
+
 /* Carrito de Compras */
 body.carrito {
     background: #fffbe7;

@@ -1,8 +1,8 @@
 // URL de tu backend
 const BACKEND_URL = "http://localhost:8080/api";
-
-// Elemento donde se mostrarán los productos
 const catalogoUL = document.getElementById("catalogo-lista");
+
+let productosGlobal = []; // almacena la lista completa
 
 // ==============================
 // CARGAR PRODUCTOS DEL BACKEND
@@ -10,24 +10,31 @@ const catalogoUL = document.getElementById("catalogo-lista");
 async function cargarProductos() {
     try {
         const respuesta = await fetch(`${BACKEND_URL}/productos`);
+        if (!respuesta.ok) throw new Error("Error al cargar productos");
         const productos = await respuesta.json();
 
-        renderizarCatalogo(productos);
-
+        // guardamos globalmente y renderizamos
+        productosGlobal = Array.isArray(productos) ? productos : [];
+        renderizarCatalogo(productosGlobal);
+        activarFiltros(); // preparar listeners de filtros
     } catch (error) {
-        console.error("Error al cargar productos:", error);
+        console.error(error);
+        showToast("No se pudieron cargar los productos", "error");
     }
 }
 
 // ==============================
 // MOSTRAR LOS PRODUCTOS EN EL DOM
 // ==============================
-function renderizarCatalogo(productos) {
+function renderizarCatalogo(productos = productosGlobal) {
     catalogoUL.innerHTML = "";
 
     productos.forEach(prod => {
         const li = document.createElement("li");
         li.className = "catalogo-item";
+
+        // normalizamos precio si viene string con puntos
+        const precio = Number(String(prod.precio || 0).replace(/\./g, "").replace(",", "."));
 
         li.innerHTML = `
             <div class="img-wrap">
@@ -35,11 +42,11 @@ function renderizarCatalogo(productos) {
             </div>
             <h3>${prod.nombre}</h3>
             <p>${prod.descripcion || ''}</p>
-            <div class="precio">Precio: $${Number(prod.precio).toLocaleString()}</div>
+            <div class="precio">Precio: $${precio.toLocaleString()}</div>
             <button class="agregarAlCarrito"
                 data-id="${prod.id}"
                 data-nombre="${prod.nombre}"
-                data-precio="${prod.precio}">
+                data-precio="${precio}">
                 +🛒
             </button>
         `;
@@ -47,7 +54,17 @@ function renderizarCatalogo(productos) {
         catalogoUL.appendChild(li);
     });
 
-    activarBotonesCarrito();
+    activarBotonesCarrito(); // reactivar listeners después de render
+}
+
+// Normaliza strings para comparar (quita tildes/diacríticos y lower-case)
+function normalizeString(s) {
+    if (!s) return "";
+    return s.toString()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "") // elimina diacríticos
+            .toLowerCase()
+            .trim();
 }
 
 // ==============================
@@ -57,12 +74,41 @@ function activarBotonesCarrito() {
     const botones = document.querySelectorAll(".agregarAlCarrito");
 
     botones.forEach(boton => {
+        boton.removeEventListener("click", () => {}); // evita duplicados
         boton.addEventListener("click", () => {
             const id = boton.dataset.id;
             const nombre = boton.dataset.nombre;
             const precio = Number(boton.dataset.precio);
 
             agregarProductoAlCarrito(id, nombre, precio);
+        });
+    });
+}
+
+// ==============================
+// ACTIVAR FILTROS
+// ==============================
+function activarFiltros() {
+    const filtros = document.querySelectorAll(".filter-btn");
+    if (!filtros.length) return;
+
+    filtros.forEach(btn => {
+        btn.addEventListener("click", () => {
+            filtros.forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+
+            const categoriaRaw = btn.dataset.category || "todos";
+            const filtroNorm = normalizeString(categoriaRaw);
+
+            const filtrados = filtroNorm === "todos"
+                ? productosGlobal
+                : productosGlobal.filter(p => {
+                    const catProd = normalizeString(p.categoria || "");
+                    // compara igualdad o contención para evitar singular/plural
+                    return catProd === filtroNorm || catProd.includes(filtroNorm) || filtroNorm.includes(catProd);
+                });
+
+            renderizarCatalogo(filtrados);
         });
     });
 }
