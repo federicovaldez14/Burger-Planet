@@ -69,22 +69,25 @@ public SecurityFilterChain filterChain(HttpSecurity http, MvcRequestMatcher.Buil
 public CorsFilter corsFilter() {
     CorsConfiguration config = new CorsConfiguration();
     config.setAllowCredentials(true);
-
-    // LOCALHOST
+    
+    // Permitir frontend local (opcional)
     config.addAllowedOriginPattern("http://127.0.0.1:5500");
     config.addAllowedOriginPattern("http://localhost:5500");
-
-    // GITHUB PAGES (TU FRONTEND FINAL)
+    
+    // PERMITIR GITHUB PAGES (IMPORTANTE)
     config.addAllowedOriginPattern("https://federicovaldez14.github.io");
+    config.addAllowedOriginPattern("https://*.github.io");
 
     config.addAllowedHeader("*");
     config.addAllowedMethod("*");
+    config.setAllowCredentials(true);
 
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     source.registerCorsConfiguration("/**", config);
 
     return new CorsFilter(source);
 }
+
 
 
 }
